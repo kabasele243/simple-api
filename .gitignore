@@ -52,13 +52,33 @@ jspm_packages/
 # dotenv environment variables file
 .env.test
 
-# Terraform
-terraform/.terraform/
-terraform/*.tfstate
-terraform/*.tfstate.backup
-terraform/.terraform.lock.hcl
-terraform/terraform.tfplan
-terraform/crash.log
+# Terraform - Sensitive Files (NEVER COMMIT)
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfplan
+**/*.tfplan.*
+**/crash.log
+**/crash.*.log
+**/.terraformrc
+**/terraform.rc
+
+# Terraform Variables (may contain secrets)
+**/terraform.tfvars
+!**/terraform.tfvars.example
+
+# Terraform Lock Files (SHOULD be committed for consistency)
+!**/.terraform.lock.hcl
+
+# Override files (environment-specific)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
 
 # IDE
 .vscode/
