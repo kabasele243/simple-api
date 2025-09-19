@@ -1,0 +1,1 @@
+# ALB module is integrated into ECS module for simplicity
