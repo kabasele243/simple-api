@@ -85,7 +85,6 @@ resource "aws_iam_policy" "github_actions" {
       {
         Effect = "Allow"
         Action = [
-          "ecs:DescribeTaskDefinition",
           "ecs:RegisterTaskDefinition",
           "ecs:UpdateService",
           "ecs:DescribeServices",
@@ -96,6 +95,13 @@ resource "aws_iam_policy" "github_actions" {
           "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:service/${var.project_name}-${var.environment}-cluster/${var.project_name}-${var.environment}-service",
           "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:task-definition/${var.project_name}-${var.environment}:*"
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:DescribeTaskDefinition"
+        ]
+        Resource = "*"
       },
       {
         Effect = "Allow"
