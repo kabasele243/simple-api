@@ -1,7 +1,9 @@
 data "aws_caller_identity" "current" {}
 
-# OIDC Provider for GitHub Actions
+# OIDC Provider for GitHub Actions (shared across environments)
 resource "aws_iam_openid_connect_provider" "github" {
+  count = var.create_oidc_provider ? 1 : 0
+
   url = "https://token.actions.githubusercontent.com"
 
   client_id_list = [
@@ -14,9 +16,19 @@ resource "aws_iam_openid_connect_provider" "github" {
   ]
 
   tags = {
-    Name        = "${var.project_name}-${var.environment}-github-oidc"
-    Environment = var.environment
+    Name        = "${var.project_name}-github-oidc"
+    Environment = "shared"
   }
+}
+
+# Data source to get existing OIDC provider if not creating new one
+data "aws_iam_openid_connect_provider" "github" {
+  count = var.create_oidc_provider ? 0 : 1
+  url   = "https://token.actions.githubusercontent.com"
+}
+
+locals {
+  oidc_provider_arn = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : data.aws_iam_openid_connect_provider.github[0].arn
 }
 
 # IAM Role for GitHub Actions
@@ -29,7 +41,7 @@ resource "aws_iam_role" "github_actions" {
       {
         Effect = "Allow"
         Principal = {
-          Federated = aws_iam_openid_connect_provider.github.arn
+          Federated = local.oidc_provider_arn
         }
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {

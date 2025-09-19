@@ -17,3 +17,9 @@ variable "github_repository" {
   description = "GitHub repository in format owner/repo-name"
   type        = string
 }
+
+variable "create_oidc_provider" {
+  description = "Whether to create the OIDC provider (true for first environment, false for others)"
+  type        = bool
+  default     = false
+}
